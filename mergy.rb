@@ -3,14 +3,19 @@ require 'hpricot'
 
 class Mergy
   def initialize(filename)
-    @str, @urls = '', File.read(filename).split("\n")
-    @urls.each do |url|
-      @str << URI.parse(url).read
-    end
+    @urls = File.read(filename).split("\n")
+    @hpricots = @urls.map{|url| Hpricot(open(url))}
   end
 
   def to_s
-    @str
+    @str = ''
+    @str << '<html>'
+    @str << '<head>'
+    @str << @hpricots.map{|h| h.at('head').inner_html}.join
+    @str << '</head>'
+    @str << '<body>'
+    @str << @hpricots.map{|h| h.at('body').inner_html}.join
+    @str << '</body></html>' 
   end
 end
 
