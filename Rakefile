@@ -1,11 +1,12 @@
 require 'rake/clean'
 
-CLEAN.include %w{meri.html cnn.html out.html}
+CLEAN.include %w{test/meri.html test/cnn.html test/out.html}
 
 task :default => :run
 
 task :console do
-  sh 'irb -r rubygems -r open-uri -r hpricot -r mergy'
+  gems = %w{rubygems open-uri hpricot mergy}
+  sh "irb -r #{gems.join(' -r ')}"
 end
 
 task :run do
