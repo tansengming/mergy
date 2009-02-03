@@ -1,7 +1,11 @@
+require 'rake/clean'
+
+CLEAN.include %w{meri.html cnn.html out.html}
+
 task :default => :run
 
 task :console do
-  sh 'irb -r rubygems -r open-uri -r hpricot'
+  sh 'irb -r rubygems -r open-uri -r hpricot -r mergy'
 end
 
 task :run do
