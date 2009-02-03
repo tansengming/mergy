@@ -1,11 +1,27 @@
+# If you've ever wanted to merge a couple of html files into one big ass file,
+# this is your thing.
+
 require 'rubygems'
 require 'open-uri'
 require 'hpricot'
 
 class Mergy
+  attr_reader :hpricots
   def initialize(paths)
     @paths = paths
+    @uris = @paths.map{|path| URI.parse(path)}
     @hpricots = @paths.map{|url| Hpricot(open(url))}
+    fix_images
+  end
+  
+  def fix_images
+    @hpricots.each do |h|
+      uri = @uris[@hpricots.index(h)]
+      
+      (h/'img').each do |img|       
+        img['src'] = "#{uri.scheme}://#{uri.host}#{img['src']}" if img['src'].match(/^\//)
+      end
+    end
   end
   
   def self.from_list(filename)
